@@ -16,8 +16,11 @@ io.on('connection', function(socket){
   	socket.on('login', function(userobj){
   		console.log(userobj);
     	sockets[userobj["name"]] = socket;
-    	users[users.length] = userobj["name"];
-    	io.emit("logged in", users);
+      console.log(users.indexOf(userobj["name"]));
+      if (users.indexOf(userobj["name"]) == -1) {
+        users[users.length] = userobj["name"];
+        io.emit("logged in", users);
+      }
   	});
 
 
@@ -25,9 +28,7 @@ io.on('connection', function(socket){
 
   	socket.on('message', function(msgpacket){
   		console.log(msgpacket);
-  		if (msgpacket["destinationUser"] != "" && sockets[msgpacket["destinationUser"]] != null) {
-  			sockets[msgpacket["destinationUser"]].emit("message", msgpacket);
-  		}
+        io.emit("message", msgpacket);
   	});
 
 
